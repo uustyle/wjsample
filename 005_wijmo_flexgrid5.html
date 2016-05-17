@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html ng-app="MyApp"> <!-- モジュールを指定 -->
+<head>
+<meta charset="UTF-8">
+<title>Wijmo 5 FlexGridサンプル5</title>
+
+<!-- Wijmo -->
+<script src="http://cdn.wijmo.com/5.20143.32/controls/wijmo.min.js" type="text/javascript"></script>
+<link href="http://cdn.wijmo.com/5.20143.32/styles/wijmo.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Wijmoコントロール -->
+<script src="http://cdn.wijmo.com/5.20143.32/controls/wijmo.grid.min.js" type="text/javascript"></script>
+
+<!-- Wijmoテーマ -->
+<link href="http://cdn.wijmo.com/5.20143.32/styles/themes/wijmo.theme.modern.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Wijmoカルチャ -->
+<script src="http://cdn.wijmo.com/5.20143.32/controls/cultures/wijmo.culture.ja.min.js " type="text/javascript"></script>
+
+<!-- AngularJSとWijmoのAngularディレクティブ -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js" type="text/javascript"></script>
+<script src="http://cdn.wijmo.com/5.20143.32/interop/angular/wijmo.angular.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    // Wijmoモジュール"wj"を指定して新規モジュールを作成
+    var myApp = angular.module("MyApp", ["wj"]);
+
+    // モジュールにコントローラーを定義
+    myApp.controller("MyController", ["$scope", "$timeout", function($scope, $timeout) {
+        // データ変数を生成
+        var gridData = [
+            {
+                "name":"iPhone 6",
+                "vendor": "Apple",
+                "ram": "1GB",
+                "platform":"iOS",
+                "version":"8.2"
+            },
+            {
+                "name":"iPhone 6 Plus",
+                "vendor": "Apple",
+                "ram": "1GB",
+                "platform":"iOS",
+                "version":"8.2"
+            },
+            {
+                "name":"iPhone 5s",
+                "vendor": "Apple",
+                "ram": "1GB",
+                "platform":"iOS",
+                "version":"7.1.4"
+            },
+            {
+                "name":"Nexus 6",
+                "vendor": "Google",
+                "ram": "3GB",
+                "platform":"Android",
+                "version":"5.1"
+            },
+            {
+                "name":"Nexus 9",
+                "vendor": "Google",
+                "ram": "2GB",
+                "platform":"Android",
+                "version":"5.1"
+            },
+            {
+                "name":"Nexus 5",
+                "vendor": "Google",
+                "ram": "2GB",
+                "platform":"Android",
+                "version":"4.4.4"
+            },
+            {
+                "name":"Zenfone 5",
+                "vendor": "ASUS",
+                "ram": "2GB",
+                "platform":"Android",
+                "version":"4.4.2"
+            },
+            {
+                "name":"Zenfone 2",
+                "vendor": "ASUS",
+                "ram": "4GB",
+                "platform":"Android",
+                "version":"5.x"
+            }
+        ];
+
+$scope.gridDataSrc = gridData;
+
+        // フィルタ値変数 ...（1）
+        $scope.filterValue = "";
+
+        // データを引数に与えてCollectionViewインスタンスを生成 ...（2）
+        $scope.gridData = new wijmo.collections.CollectionView($scope.gridDataSrc);
+
+        // フィルタ処理を実装 ...（3）
+        $scope.gridData.filter = function(item) {
+            // フィルタ未指定の時は無条件true
+            if (!$scope.filterValue) {
+                return true;
+            }
+            // フィルタ指定されている時はname属性とマッチング
+            else {
+                return item.name.indexOf($scope.filterValue) > -1;
+            }
+        };
+
+        $scope.add = function() {
+alert("add");
+
+            var griddt = {
+                "name":"iPhone 6",
+                "vendor": "Apple",
+                "ram": "1GB",
+                "platform":"iOS",
+                "version":"8.2"
+            };
+            
+console.log(griddt);            
+            
+            $scope.gridDataSrc.push(griddt);
+            $scope.gridData.refresh();
+
+        };
+
+        $scope.del = function() {
+alert("del");
+
+console.log("$scope.gridData.sourceCollection.length",$scope.gridData.sourceCollection.length)
+
+               $scope.gridData.remove($scope.gridData.items[0]);
+
+        //  for (var i = 0; i < $scope.gridData.sourceCollection.length; i ++){
+        //        $scope.gridData.remove($scope.gridData.sourceCollection.items[0]);
+        //        $scope.gridData.remove($scope.gridData.sourceCollection[0]);
+        //  }
+
+
+
+        };
+
+
+
+
+        // フィルタ変数（filterValue）が変更された時の処理 ...（4）
+        var filterDescriptor;
+        $scope.$watch('filterValue', function () {
+            // timeout実行中の場合は一旦解除
+            if (filterDescriptor) {
+                $timeout.cancel(filterDescriptor);
+            }
+            // 一定時間遅延後フィルタ適用
+            filterDescriptor = $timeout(function () {
+                $scope.gridData.refresh();
+            }, 1000);
+        });
+    }]);
+</script>
+</head>
+
+<!-- bodyタグ内でMyControllerを参照 -->
+<body ng-controller="MyController">
+<h1>Wijmo 5 FlexGridサンプル5</h1>
+
+<!-- FlexGrid表示 -->
+<h3>FlexGrid</h3>
+<wj-flex-grid items-source="gridData" style="width:700px" selection-mode="ListBox">
+    <wj-flex-grid-column header="製品名" binding="name"></wj-flex-grid-column>
+    <wj-flex-grid-column header="メーカー" binding="vendor"></wj-flex-grid-column>
+    <wj-flex-grid-column header="メモリ" binding="ram"></wj-flex-grid-column>
+    <wj-flex-grid-column header="OS" binding="platform"></wj-flex-grid-column>
+    <wj-flex-grid-column header="バージョン" binding="version"></wj-flex-grid-column>
+</wj-flex-grid>
+
+<h3>フィルタ指定</h3>
+<input type="text" ng-model="filterValue"/>
+
+<input type="button" ng-click="add()" value="add">
+
+<input type="button" ng-click="del()" value="del">
+
+
+</body>
+</html>
