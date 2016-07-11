@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<!-- モジュールを指定 -->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Wijmo 5 FlexGridサンプル5</title>
+
+    <!-- Wijmo -->
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.min.js" type="text/javascript"></script>
+    <link href="http://cdn.wijmo.com/5.20161.154/styles/wijmo.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Wijmoコントロール -->
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.grid.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.input.min.js" type="text/javascript"></script>
+
+    <!-- Wijmoテーマ -->
+    <link href="http://cdn.wijmo.com/5.20161.154/styles/themes/wijmo.theme.modern.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Wijmoカルチャ -->
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/cultures/wijmo.culture.ja.min.js " type="text/javascript"></script>
+
+    <!-- AngularJSとWijmoのAngularディレクティブ -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/interop/angular/wijmo.angular.min.js" type="text/javascript"></script>
+
+
+    <script type="text/javascript">
+        var app = angular.module('app', ['wj']); app.controller('appCtrl', function ($scope, $timeout) { 
+            
+
+$scope.onShowing2 = function(e) {
+console.log("onShowing");
+};
+
+$scope.shown = function(e) {
+    
+console.log("shown");
+};
+
+            
+$scope.test = function(popup,popup1) {
+
+    console.log(popup.hostElement);
+    console.log(popup.hostElement);
+
+    console.log($scope.popup);
+
+    // $scope.popup2 = angular.copy(popup);
+    // $scope.popup3 = angular.copy(popup);
+
+    $scope.popup.show(true);
+
+
+    console.log($scope.popup.hostElement.style);
+    // $scope.popup.hostElement.style = $scope.popup.hostElement.style + ";display:none;";
+    $scope.popup.hostElement.style = $scope.popup.hostElement.style + ";visibility:hidden;";
+
+    // popup1.show(false);
+    // popup1.show(false);
+    // popup1.show(false);
+
+    // $('#popup3').clone()
+
+    $scope.ele11 = $('#popup3').clone()
+    // $scope.ele11 = $('#popup3');
+    $scope.popup11 = new wijmo.input.Popup($scope.ele11);
+    $scope.popup11.show(false);
+    $scope.popup11.onHidden = function() {
+
+console.log("hidden 11");
+
+    console.log($scope.popup11);
+    console.log($scope.popup12);
+    
+    
+    
+$timeout(function () {
+    // $scope.popup.hostElement.style = $scope.popup.hostElement.style + ";display:block;";
+
+    $scope.popup.hide();
+            }, 1000);    
+    
+    // $scope.ele11.remove();
+    
+
+    };
+
+
+    $scope.ele12 = $('#popup3').clone()
+    // $scope.ele12 = $('#popup3');
+    $scope.popup12 = new wijmo.input.Popup($scope.ele12);
+    $scope.popup12.show(false);
+    $scope.popup12.onHidden = function() {
+
+console.log("hidden 12");
+
+    console.log($scope.popup11);
+    console.log($scope.popup12);
+    // $scope.ele12.remove();
+
+};
+
+
+
+// var tt = new wijmo.Tooltip();
+// tt.show(popup.hostElement, '偶数はエラーです。'); 
+
+// var tt2 = new wijmo.Tooltip();
+
+// tt2.show(popup.hostElement, '偶数はエラーです1。'); 
+    
+};
+
+
+
+$scope.hiding = function() {
+
+console.log("hiding oya");
+    console.log($scope.popup11);
+    console.log($scope.popup12);
+    
+
+};
+
+
+$scope.hidden = function() {
+
+console.log("hidden oya");
+
+    console.log($scope.popup11.hostElement);
+    console.log($scope.popup12.hostElement);
+
+
+    console.log($scope.popup11);
+    console.log($scope.popup12);
+
+// $scope.popup11.hostElement.remove();
+// $scope.popup12.hostElement.remove();
+
+    console.log($scope.popup11.hostElement);
+    console.log($scope.popup12.hostElement);
+
+
+    console.log($scope.popup11);
+    console.log($scope.popup12);
+
+
+};
+
+
+
+$scope.test1 = function(popup1) {
+
+
+// $scope.popup2 = angular.copy(popup);
+// $scope.popup3 = angular.copy(popup);
+
+popup1.show();
+popup1.show();
+// var tt = new wijmo.Tooltip();
+// tt.show(popup.hostElement, '偶数はエラーです。'); 
+
+// var tt2 = new wijmo.Tooltip();
+
+// tt2.show(popup.hostElement, '偶数はエラーです1。'); 
+
+
+    
+};
+            
+                
+            
+            
+            
+        });
+    </script>
+
+</head>
+
+<!-- bodyタグ内でMyControllerを参照 -->
+
+<body>
+
+    <div ng-app="app" ng-controller="appCtrl">
+        <!--
+        <button ng-click="popup.show()">ポップアップを表示</button>
+-->
+        <button ng-click="test(popup,popup1)">ポップアップを表示</button>
+        <div>
+            <wj-popup control="popup" modal="true" show-trigger="None" hide-trigger="None" showing="onShowing2(e)" hiding="hiding()"
+            hidden="hidden()">
+                <div>ポップアップ</div>
+                <div wj-tooltip="#fineprint" style="border:1px solid gray;padding:5px;">ここにマウスを乗せると<br>ツールチップが表示される</div>
+                <button class="wj-hide">閉じる</button>
+            </wj-popup>
+            <div id="fineprint" style="display:none">
+                <h3>重要</h3>
+                <p>今四半期のデータは比例配分によって得られた推定値です。</p>
+            </div>
+        </div>
+
+
+        <div>
+            <wj-popup control="popup1" modal="false" show-trigger="None" hide-trigger="None">
+                <div>ポップアップ1</div>
+                <div wj-tooltip="#fineprint" style="border:1px solid gray;padding:5px;">ここにマウスを乗せると<br>ツールチップが表示される</div>
+                <button class="wj-hide">閉じる</button>
+            </wj-popup>
+            <div id="fineprint" style="display:none">
+                <h3>重要</h3>
+                <p>今四半期のデータは比例配分によって得られた推定値です。</p>
+            </div>
+        </div>
+
+        <div id="popup3">
+            <div>ポップアップ</div>
+<input type="text">aaa</input>
+            <button class="wj-hide">閉じる</button>
+        </div>
+
+
+
+
+        <button id="btn11" type="button" class="btn">
+            Click
+     </button>
+        <button id="btn22" type="button" class="btn">
+            Click
+     </button>
+
+        <wj-popup class="popover" owner="#btn11" show-trigger="Click" hide-trigger="Blur">
+            <!--<ng-include src="'includes/popup.htm'"></ng-include>-->
+            <h3>
+        Salutationaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    </h3>
+        </wj-popup>
+
+
+
+        <wj-popup owner="#btn22" show-trigger="Click" hide-trigger="Blur">
+            <h3>
+        Salutation
+    </h3>
+
+        </wj-popup>
+
+
+
+
+
+        <button id="btn3" type="button">
+    Click to show Popup
+</button>
+        <wj-popup owner="#btn3" show-trigger="Click" hide-trigger="Blur">
+            <h3>
+        Salutation
+    </h3>
+            <div class="popover-content">
+                aaaaa
+            </div>
+        </wj-popup>
+
+
+
+
+    </div>
+
+
+
+
+
+</body>
+
+</html>

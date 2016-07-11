@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<!-- モジュールを指定 -->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Wijmo 5 FlexGridサンプル5</title>
+
+    <!-- Wijmo -->
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.min.js" type="text/javascript"></script>
+    <link href="http://cdn.wijmo.com/5.20161.154/styles/wijmo.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Wijmoコントロール -->
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.grid.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.input.min.js" type="text/javascript"></script>
+
+    <!-- Wijmoテーマ -->
+    <link href="http://cdn.wijmo.com/5.20161.154/styles/themes/wijmo.theme.modern.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Wijmoカルチャ -->
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/cultures/wijmo.culture.ja.min.js " type="text/javascript"></script>
+
+    <!-- AngularJSとWijmoのAngularディレクティブ -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/interop/angular/wijmo.angular.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        // Wijmoモジュール"wj"を指定して新規モジュールを作成
+    var myApp = angular.module("MyApp", ["wj"]);
+
+    // モジュールにコントローラーを定義
+    myApp.controller("MyController", ["$scope", "$timeout", function($scope, $timeout) {
+        // データ変数を生成
+        var gridData = [
+            {
+                "id":"1",
+                "name":"iPhone 6",
+                "vendor": "Apple",
+                "ram": "1",
+                "platform":"1",
+                "version":"8.2"
+            },
+            {
+                "id":"2",
+                "name":"iPhone 6 Plus",
+                "vendor": "Apple",
+                "ram": "1",
+                "platform":"1",
+                "version":"8.2"
+            },
+            {
+                "id":"3",
+                "name":"iPhone 5s",
+                "vendor": "Apple",
+                "ram": "1",
+                "platform":"1",
+                "version":"7.1.4"
+            },
+            {
+                "id":"4",
+                "name":"Nexus 6",
+                "vendor": "Google",
+                "ram": "1",
+                "platform":"2",
+                "version":"5.1"
+            },
+            {
+                "id":"5",
+                "name":"Nexus 9",
+                "vendor": "Google",
+                "ram": "1",
+                "platform":"2",
+                "version":"5.1"
+            },
+            {
+                "id":"6",
+                "name":"Nexus 5",
+                "vendor": "Google",
+                "ram": "2",
+                "platform":"2",
+                "version":"4.4.4"
+            },
+            {
+                "id":"7",
+                "name":"Zenfone 5",
+                "vendor": "ASUS",
+                "ram": "2",
+                "platform":"2",
+                "version":"4.4.2"
+            },
+            {
+                "id":"8",
+                "name":"Zenfone 2",
+                "vendor": "ASUS",
+                "ram": "2",
+                "platform":"2",
+                "version":"5.x"
+            }
+        ];
+
+
+$scope.gridDataSrc = gridData;
+//$scope.gridDataSrc = [];
+
+// $scope.platforms = 'iOS,Android'.split(','),
+
+
+$scope.platforms =
+        new wijmo.grid.DataMap([
+            {id: "-1", name: '　'}, 
+            {id: "1", name: 'IOS'}, 
+            {id: "2", name: 'Android'}], 'id', 'name');
+
+$scope.rams =
+        new wijmo.grid.DataMap([
+            {id: "-1", name: '　'}, 
+            {id: "1", name: '1GB'}, 
+            {id: "2", name: '2GB'}], 'id', 'name');
+
+
+        // フィルタ値変数 ...（1）
+        $scope.filterValue = "";
+
+console.log();
+
+        // データを引数に与えてCollectionViewインスタンスを生成 ...（2）
+        $scope.gridData = new wijmo.collections.CollectionView($scope.gridDataSrc);
+
+
+
+        // フィルタ処理を実装 ...（3）
+        $scope.gridData.filter = function(item) {
+            // フィルタ未指定の時は無条件true
+            if (!$scope.filterValue) {
+                return true;
+            }
+            // フィルタ指定されている時はname属性とマッチング
+            else {
+                return item.name.indexOf($scope.filterValue) > -1;
+            }
+        };
+
+
+$scope.itemFormatter = function(panel, r, c, cell) {
+
+console.log("itemFormatter",panel, r, c, cell);
+
+    // if (c == 0) {
+    //     // 1列目のセルにボタンを配置します。
+    //     cell.innerHTML = '<div style="text-align: center;"><input type="button" value="詳細表示" onclick="showData(' + r + ');" style="margin: -3px;" /></div>';
+    // }
+
+    var flex = panel.grid;
+    var editRange = panel.grid.editRange;
+
+        let val = flex.getCellData(r, c);
+                 
+    if (panel.cellType == wijmo.grid.CellType.Cell && c == 0) {
+        // 1列目のセルにボタンを配置します。
+        cell.innerHTML = '<div style="text-align: center;"><input type="button" value=' + val + ' onclick="showData(' + r + ');" style="margin: -3px;" /></div>';
+    }
+
+    if (panel.cellType == wijmo.grid.CellType.Cell && c == 1) {
+        // 1列目のセルにボタンを配置します。
+
+console.log("this1");
+        if (editRange && editRange.row === r && editRange.col === c) {
+            
+                    //   cell.childNodes[0].style.display = 'none';
+                    //     // remove clipping to make drop-downs visible
+                    //     cell.style.overflow = 'visible';
+
+
+       cell.innerHTML = '<div style="text-align: center;"><input type="text" value="' + val + '" style="margin: -3px;" /></div>';
+//  flex.endUpdate();
+
+            var checkBox = cell.firstChild;
+
+
+
+            // チェック時にすぐに編集を確定します。
+            checkBox.addEventListener('blur', function (e) {
+
+// flex.beginUpdate();  
+
+console.log("blur", this.value);
+        flex.setCellData(r, c, this.value);
+                flex.collectionView.commitEdit();
+            });
+            
+        }else{
+
+console.log("this2");
+
+// flex.beginUpdate();        
+    //    cell.innerHTML = '<div style="text-align: center;"><input type="text" value="' + val + '" style="margin: -3px;" /></div>';
+       cell.innerHTML = '<input type="text" value="' + val + '" style="margin: -3px;" />';
+//  flex.endUpdate();
+// flex.collectionView.commitEdit();
+
+            var checkBox = cell.firstChild;
+
+console.log("checkBox", checkBox);
+
+            // チェック時にすぐに編集を確定します。
+            checkBox.addEventListener('blur', function (e) {
+
+// flex.beginUpdate();  
+
+console.log("blur");
+console.log("blur", e.target.value);
+
+flex.beginUpdate();        
+
+        flex.setCellData(r, c, this.value, true);
+                // flex.collectionView.commitEdit();
+
+ flex.endUpdate();
+// e.preeventDefault();
+
+            });
+
+
+            // var checkBox = cell.firstChild;
+
+            // // チェック時にすぐに編集を確定します。
+            // checkBox.addEventListener('mousedown', function (e) {
+            //     flex.collectionView.commitEdit();
+            // });
+        }
+    }
+
+        //  flex.setCellData(r, c, "test", true);
+    }
+
+
+
+
+
+    $scope.initialized = function() {
+        console.log('initialized');
+        
+        $scope.grid.selection = new wijmo.grid.CellRange(-1,-1,-1,-1);
+
+    };
+
+    $scope.load = function(sender, args) {
+        console.log('load');
+        
+    };
+
+
+
+    $scope.itemsSourceChanged = function(e) {
+        console.log('itemsSourceChanged', e);
+    };
+
+
+
+    $scope.selectionChanged = function(s, e) {
+        console.log('changed ', e);
+    };
+
+
+
+    $scope.editEnded = function (s, e) {
+
+console.log("editEnded");
+
+
+    }
+
+
+    // change city's data map depending on row
+    $scope.beginningEdit = function (s, e) {
+        
+console.log("beginningEdit");
+        
+
+    }
+
+
+
+        $scope.add = function() {
+alert("add1");
+
+            
+            // console.log($scope.gridData);
+            // $scope.gridData.refresh();
+$scope.grid.collectionView.commitEdit();
+// $scope.grid.finishEditing(true);
+for(var i = 0; i < $scope.grid.rows.length; i ++){
+    
+    console.log("id",$scope.grid.rows[i].dataItem.id);
+    console.log("name",$scope.grid.rows[i].dataItem.name);
+    
+}
+
+
+         for (var i = 0; i < $scope.gridData.sourceCollection.length; i ++){
+               console.log($scope.gridData.items[i].name);
+         }
+
+        };
+        
+
+
+        // フィルタ変数（filterValue）が変更された時の処理 ...（4）
+        var filterDescriptor;
+        $scope.$watch('filterValue', function () {
+            // timeout実行中の場合は一旦解除
+            if (filterDescriptor) {
+                $timeout.cancel(filterDescriptor);
+            }
+            // 一定時間遅延後フィルタ適用
+            filterDescriptor = $timeout(function () {
+                $scope.gridData.refresh();
+            }, 1000);
+        });
+    }]);
+    </script>
+
+    <style type="text/css">
+        .redRow {
+            background-color: rgb(250, 210, 210) !important;
+        }
+    </style>
+
+
+</head>
+
+<!-- bodyタグ内でMyControllerを参照 -->
+
+<body ng-controller="MyController">
+    <h1>Wijmo 5 FlexGridサンプル5</h1>
+
+    <ng-form name="userForm" novalidate>
+        <!-- FlexGrid表示 -->
+        <h3>FlexGrid</h3>
+        <wj-flex-grid items-source="gridData" style="width:700px;height:400px;" selection-mode="Row" control="grid" selection-changed="selectionChanged(s,e)"
+            beginning-edit="beginningEdit(s,e)" initialized="initialized()" cell-edit-ended="editEnded(s,e)" loaded-rows="load(s,e)"
+            item-formatter="itemFormatter" items-source-changed="itemsSourceChanged(e)">
+            <wj-flex-grid-column header="id" binding="id"></wj-flex-grid-column>
+            <wj-flex-grid-column header="製品名" binding="name" is-read-only="true"></wj-flex-grid-column>
+            <wj-flex-grid-column header="メーカー" binding="vendor"></wj-flex-grid-column>
+            <wj-flex-grid-column header="メモリ" binding="ram" data-map="rams" show-drop-down="true"></wj-flex-grid-column>
+            <wj-flex-grid-column header="OS" binding="platform" data-map="platforms" show-drop-down="true"></wj-flex-grid-column>
+            <wj-flex-grid-column header="バージョン" binding="version"></wj-flex-grid-column>
+        </wj-flex-grid>
+
+        <h3>フィルタ指定</h3>
+        <input type="text" ng-model="filterValue" />
+
+        <input type="button" ng-click="add()" value="add">
+
+        <input type="button" ng-click="del()" value="del">
+
+        <input type="button" ng-click="move()" value="move">
+
+        <input type="button" ng-click="chgtime()" value="chgtime">
+
+
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        </form>
+
+</body>
+
+</html>

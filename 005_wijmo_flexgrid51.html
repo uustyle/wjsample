@@ -7,22 +7,22 @@
     <title>Wijmo 5 FlexGridサンプル5</title>
 
     <!-- Wijmo -->
-    <script src="http://cdn.wijmo.com/5.20143.32/controls/wijmo.min.js" type="text/javascript"></script>
-    <link href="http://cdn.wijmo.com/5.20143.32/styles/wijmo.min.css" rel="stylesheet" type="text/css" />
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.min.js" type="text/javascript"></script>
+    <link href="http://cdn.wijmo.com/5.20161.154/styles/wijmo.min.css" rel="stylesheet" type="text/css" />
 
     <!-- Wijmoコントロール -->
-    <script src="http://cdn.wijmo.com/5.20143.32/controls/wijmo.grid.min.js" type="text/javascript"></script>
-    <script src="http://cdn.wijmo.com/5.20143.32/controls/wijmo.input.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.grid.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.input.min.js" type="text/javascript"></script>
 
     <!-- Wijmoテーマ -->
-    <link href="http://cdn.wijmo.com/5.20143.32/styles/themes/wijmo.theme.modern.min.css" rel="stylesheet" type="text/css" />
+    <link href="http://cdn.wijmo.com/5.20161.154/styles/themes/wijmo.theme.modern.min.css" rel="stylesheet" type="text/css" />
 
     <!-- Wijmoカルチャ -->
-    <script src="http://cdn.wijmo.com/5.20143.32/controls/cultures/wijmo.culture.ja.min.js " type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/cultures/wijmo.culture.ja.min.js " type="text/javascript"></script>
 
     <!-- AngularJSとWijmoのAngularディレクティブ -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js" type="text/javascript"></script>
-    <script src="http://cdn.wijmo.com/5.20143.32/interop/angular/wijmo.angular.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/interop/angular/wijmo.angular.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // Wijmoモジュール"wj"を指定して新規モジュールを作成
@@ -106,8 +106,13 @@ $scope.gridDataSrc = gridData;
 
 // $scope.platforms = 'iOS,Android'.split(','),
 
-$scope.theDate = new Date();
+$scope.theDate1 = new Date();
+$scope.theDate2 = new Date();
+$scope.theDate3 = new Date();
 
+console.log($scope.theDate1);
+
+$scope.testA = 1;
 
 
 
@@ -287,10 +292,69 @@ $scope.grid.refresh();
 
 
 
+        $scope.showing = function(e) {
+
+console.log("showing");
+// var date_obj = new Date(2000,10,1,13,30,59,999);
+$scope.theDate1 = new Date();
+$scope.theDate2 = new Date();
+// $scope.$apply();
+console.log("showing");
+
+
+
+
+// console.log($scope.wjInputTimeCtrl);
+// $scope.wjInputTimeCtrl.refresh(true);
+
+        };
+
+
+
+        $scope.shown = function(e) {
+
+console.log("shown");
+// var date_obj = new Date(2000,10,1,13,30,59,999);
+$scope.theDate1 = new Date();
+$scope.theDate2 = new Date();
+// $scope.$apply();
+console.log("shown");
+
+$scope.testA = $scope.testA + 1;
+
+// console.log($scope.wjInputTimeCtrl);
+// $scope.wjInputTimeCtrl.refresh(true);
+
+
+        $scope.inputTime = new wijmo.input.InputTime('#theInputTime', {
+            // min: new Date(2014, 8, 1, 9, 0),
+            // max: new Date(2014, 8, 1, 17, 0),
+            step: 1,
+            format: 'h:mm tt',
+            value: new Date()
+        });
+
+        };
+
+
+
+
         $scope.chgtime = function() {
 
-$scope.theDate = new Date();
+// $scope.inputTime.hostElement.remove();
 
+console.log($scope.popup);
+$scope.popup.refresh(true);
+
+$scope.popup.beginUpdate();
+
+$scope.theDate1 = new Date();
+$scope.theDate2 = new Date();
+
+$scope.popup.endUpdate();
+
+// console.log($scope.wjInputTimeCtrl);
+// $scope.wjInputTimeCtrl.refresh(true);
 
         };
 
@@ -330,7 +394,6 @@ $scope.gridData.removeAt(i);
 
     
 }
-
 
 //               $scope.gridData.remove($scope.gridData.items[0]);
 
@@ -417,9 +480,9 @@ dirty
 
 
 <wj-input-time 
-  value="theDate" 
-  format="h:mm tt"
-  step="15">
+  value="theDate1" 
+  format="h:mm"
+  step="1">
 </wj-input-time>
 
 
@@ -427,20 +490,32 @@ dirty
 <button id="btn2" type="button">
     Click to show Popup
 </button>
-<wj-popup 
-<wj-popup owner="#btn2" show-trigger="Click" hide-trigger="Blur">
+<wj-popup control="popup" owner="#btn2" show-trigger="Click" hide-trigger="Click" shown="shown(e)" showing="showing(e)">
     <h3>
         Salutation
     </h3>
     <div class="popover-content">
-        <wj-input-time 
-        value="theDate" 
-        format="h:mm tt"
-        step="15">
+        <wj-input-time
+        min="09:00"
+    max="23:59"
+          format="h:mm"
+        ng-model-options="{ debounce: 1 }"
+        step="1">
         </wj-input-time>
+
+    <input type="text" ng-show="true" ng-model="testA">
+
+<div id="theInputTime"></div>
+
     </div>
 </wj-popup>
 
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
 </form>
 
