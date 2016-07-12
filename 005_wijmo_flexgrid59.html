@@ -198,7 +198,13 @@ link: function postLink(scope, element, attrs, ctrl){       //Link関数
             
     scope: {
       title: '@'
-    },            
+    },
+
+controllerAs: 'ctrl',
+
+controller: ['$scope', function($scope){                   
+      this.hello = 'Hello !';                   
+    }],      
             
                 templateUrl: './templt.html',
             link: function(scope, el, attr){
