@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!-- モジュールを指定 -->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Wijmo 5 FlexGridサンプル5</title>
+
+    <!-- Wijmo -->
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.min.js" type="text/javascript"></script>
+    <link href="http://cdn.wijmo.com/5.20161.154/styles/wijmo.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Wijmoコントロール -->
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.grid.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/wijmo.input.min.js" type="text/javascript"></script>
+
+    <!-- Wijmoテーマ -->
+    <link href="http://cdn.wijmo.com/5.20161.154/styles/themes/wijmo.theme.modern.min.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" href="../bower_components/angular-treasure-overlay-spinner/src/treasure-overlay-spinner.css">
+    <!-- Wijmoカルチャ -->
+    <script src="http://cdn.wijmo.com/5.20161.154/controls/cultures/wijmo.culture.ja.min.js " type="text/javascript"></script>
+
+    <!-- AngularJSとWijmoのAngularディレクティブ -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js" type="text/javascript"></script>
+    <script src="http://cdn.wijmo.com/5.20161.154/interop/angular/wijmo.angular.min.js" type="text/javascript"></script>
+
+
+<script src='../bower_components/angular-animate/angular-animate.js'></script>
+  <script src='../bower_components/angular-treasure-overlay-spinner/src/treasure-overlay-spinner.js'></script>
+
+    <script type="text/javascript">
+        var app = angular.module('app', ['wj','treasure-overlay-spinner']); 
+        app.controller('appCtrl', function ($scope, $timeout) { 
+
+            $scope.test = function() {
+
+                $scope.spinner = {active: true};
+                
+              $timeout(function () {
+                    // $scope.popup.hostElement.style = $scope.popup.hostElement.style + ";display:block;";
+
+                $scope.spinner = {active: false};
+                }, 3000);                   
+                
+                
+            };
+
+            
+        });
+        
+        
+    </script>
+
+</head>
+
+<!-- bodyタグ内でMyControllerを参照 -->
+
+<body>
+
+    <div ng-app="app" ng-controller="appCtrl">
+
+        <button ng-click="test()">ポップアップを表示</button>
+        
+        <div>
+            <wj-popup control="popup" modal="true" show-trigger="None" hide-trigger="None" shown="onShown(e)">
+                <div>
+                    <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="overlay-spinner"></span>
+                </div>
+            </wj-popup>
+        </div>
+
+
+
+<div ng-app='example'>
+  <!-- active uses two-way bindings to track the status -->
+  <treasure-overlay-spinner active='spinner.active'>
+    <p>This will be covered by a spinner when spinner.active is truthy</p>
+  </treasure-overlay-spinner>
+</div>
+
+    </div>
+
+
+</body>
+
+</html>
