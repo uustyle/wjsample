@@ -28,14 +28,14 @@
     <script src="../assets/prettify.js" type="text/javascript"></script>
     <script src="../assets/angular-cookies.js"></script>
 
-    <script src="../assets/angularLocalStorage.js"></script>
+    <script src="../assets/angular-local-storage.js"></script>
 
     <script type="text/javascript">
         // Wijmoモジュール"wj"を指定して新規モジュールを作成
-    var myApp = angular.module("MyApp", ["wj","angularLocalStorage"]);
+    var myApp = angular.module("MyApp", ["wj","LocalStorageModule"]);
 
     // モジュールにコントローラーを定義
-    myApp.controller("MyController", ["$scope", "$timeout", "storage", function($scope, $timeout, storage) {
+    myApp.controller("MyController", ["$scope", "$timeout", "localStorageService", "$rootScope", function($scope, $timeout, localStorageService, $rootScope) {
         // データ変数を生成
         var gridData = [
             {
@@ -144,7 +144,7 @@ console.log();
         // データを引数に与えてCollectionViewインスタンスを生成 ...（2）
         $scope.gridData = new wijmo.collections.CollectionView($scope.gridDataSrc);
 
-storage.bind($scope, 'gridDataSrc', {storeName: "grid", defaultValue: $scope.gridDataSrc});
+localStorageService.bind($scope, 'gridDataSrc', {storeName: "grid", defaultValue: $scope.gridDataSrc});
 
 
         // フィルタ処理を実装 ...（3）
@@ -294,7 +294,7 @@ $scope.grid.refresh();
         //        console.log($scope.gridData.items[i].id);
         //  }
 
-        };
+        }
 
 
 
@@ -383,39 +383,50 @@ console.log(griddt);
             $scope.gridDataSrc.push(griddt);
             $scope.gridData.refresh();
 
-storage.bind($scope, 'gridDataSrc', {storeName: "grid", defaultValue: $scope.gridDataSrc});
+localStorageService.bind($scope, 'gridDataSrc', {storeName: "grid", defaultValue: $scope.gridDataSrc});
 
         };
+
+
 
         $scope.del = function() {
-alert("del");
+            alert("del");
 
-console.log("$scope.gridData.sourceCollection.length",$scope.gridData.sourceCollection.length)
+            console.log("$scope.gridData.sourceCollection.length",$scope.gridData.sourceCollection.length)
 
-for(var i = $scope.gridData.sourceCollection.length - 1 ; i > -1; i--){
-    
-console.log($scope.gridData.items[i].name);
+            for(var i = $scope.gridData.sourceCollection.length - 1 ; i > -1; i--){
+                
+            console.log($scope.gridData.items[i].name);
 
-if($scope.gridData.items[i].name === "Nexus 5"){
-$scope.gridData.removeAt(i);
-    
-}
+            if($scope.gridData.items[i].name === "Nexus 5"){
+            $scope.gridData.removeAt(i);
+                
+            }
 
-    
-}
-
-//               $scope.gridData.remove($scope.gridData.items[0]);
-
-        //  for (var i = 0; i < $scope.gridData.sourceCollection.length; i ++){
-        //        $scope.gridData.remove($scope.gridData.sourceCollection.items[0]);
-        //        $scope.gridData.remove($scope.gridData.sourceCollection[0]);
-        //  }
-
+                
+            }
 
 
         };
 
 
+        $scope.itemsFormat = function(panel, r, c, cell) {
+            
+            console.log("itemsFormat");
+
+        };
+        
+
+
+        $rootScope.$on('LocalStorageModule.notification.setitem', function (event, data) {
+            console.info('LocalStorageModule.notification.setitem',data);
+        });
+
+
+        
+        $scope.$watch('gridDataSrc', function (val) {
+console.log('gridDataSrc watch', val);
+        }, true);        
 
 
         // フィルタ変数（filterValue）が変更された時の処理 ...（4）
@@ -431,16 +442,15 @@ $scope.gridData.removeAt(i);
             }, 1000);
         });
     }]);
-
     </script>
-    
-<style type="text/css">
-.redRow {
-    background-color:rgb(250, 210, 210) !important;
-}
-</style>    
-    
-    
+
+    <style type="text/css">
+        .redRow {
+            background-color: rgb(250, 210, 210) !important;
+        }
+    </style>
+
+
 </head>
 
 <!-- bodyタグ内でMyControllerを参照 -->
@@ -448,85 +458,73 @@ $scope.gridData.removeAt(i);
 <body ng-controller="MyController">
     <h1>Wijmo 5 FlexGridサンプル5</h1>
 
-<ng-form name="userForm" novalidate>
-    <!-- FlexGrid表示 -->
-    <h3>FlexGrid</h3>
-    <wj-flex-grid items-source="gridData" style="width:700px;height:400px;" selection-mode="Row" control="grid" selection-changed="selectionChanged(s,e)"
-    beginning-edit="beginningEdit(s,e)" initialized="initialized()"
-    cell-edit-ended="editEnded(s,e)"
-    loaded-rows="load(s,e)"
-    items-source-changed="itemsSourceChanged(e)"
-    >
-        <wj-flex-grid-column header="id" binding="id"></wj-flex-grid-column>
-        <wj-flex-grid-column header="製品名" binding="name"></wj-flex-grid-column>
-        <wj-flex-grid-column header="メーカー" binding="vendor"></wj-flex-grid-column>
-        <wj-flex-grid-column header="メモリ" binding="ram" data-map="rams" show-drop-down="true"></wj-flex-grid-column>
-        <wj-flex-grid-column header="OS" binding="platform" data-map="platforms" show-drop-down="true"></wj-flex-grid-column>
-        <wj-flex-grid-column header="バージョン" binding="version"></wj-flex-grid-column>
-    </wj-flex-grid>
+    <ng-form name="userForm" novalidate>
+        <!-- FlexGrid表示 -->
+        <h3>FlexGrid</h3>
+        <wj-flex-grid items-source="gridData" style="width:700px;height:400px;" selection-mode="Row" control="grid" selection-changed="selectionChanged(s,e)"
+            beginning-edit="beginningEdit(s,e)" initialized="initialized()" cell-edit-ended="editEnded(s,e)" loaded-rows="load(s,e)"
+            items-source-changed="itemsSourceChanged(e)"
+            item-formatter="itemsFormat(panel, r, c, cell)"
+            >
+            <wj-flex-grid-column header="id" binding="id"></wj-flex-grid-column>
+            <wj-flex-grid-column header="製品名" binding="name"></wj-flex-grid-column>
+            <wj-flex-grid-column header="メーカー" binding="vendor"></wj-flex-grid-column>
+            <wj-flex-grid-column header="メモリ" binding="ram" data-map="rams" show-drop-down="true"></wj-flex-grid-column>
+            <wj-flex-grid-column header="OS" binding="platform" data-map="platforms" show-drop-down="true"></wj-flex-grid-column>
+            <wj-flex-grid-column header="バージョン" binding="version"></wj-flex-grid-column>
+        </wj-flex-grid>
 
-    <h3>フィルタ指定</h3>
-    <input type="text" ng-model="filterValue" />
+        <h3>フィルタ指定</h3>
+        <input type="text" ng-model="filterValue" />
 
-    <input type="button" ng-click="add()" value="add">
+        <input type="button" ng-click="add()" value="add">
 
-    <input type="button" ng-click="del()" value="del">
+        <input type="button" ng-click="del()" value="del">
 
-    <input type="button" ng-click="move()" value="move">
+        <input type="button" ng-click="move()" value="move">
 
-    <input type="button" ng-click="chgtime()" value="chgtime">
+        <input type="button" ng-click="chgtime()" value="chgtime">
 
 
-    <input type="text" ng-show="true" ng-model="dirtytest">
+        <input type="text" ng-show="true" ng-model="dirtytest"> {{test1}} {{dirtytest}}
 
-{{test1}}
-{{dirtytest}}
-
-<div ng-show="userForm.$dirty">
-dirty
-</div>
+        <div ng-show="userForm.$dirty">
+            dirty
+        </div>
 
 
 
-<wj-input-time 
-  value="theDate1" 
-  format="h:mm"
-  step="1">
-</wj-input-time>
-
-
-<p>Here is a Popup control triggered by a button:</p>
-<button id="btn2" type="button">
-    Click to show Popup
-</button>
-<wj-popup control="popup" owner="#btn2" show-trigger="Click" hide-trigger="Click" shown="shown(e)" showing="showing(e)">
-    <h3>
-        Salutation
-    </h3>
-    <div class="popover-content">
-        <wj-input-time
-        min="09:00"
-    max="23:59"
-          format="h:mm"
-        ng-model-options="{ debounce: 1 }"
-        step="1">
+        <wj-input-time value="theDate1" format="h:mm" step="1">
         </wj-input-time>
 
-    <input type="text" ng-show="true" ng-model="testA">
 
-<div id="theInputTime"></div>
+        <p>Here is a Popup control triggered by a button:</p>
+        <button id="btn2" type="button">
+    Click to show Popup
+</button>
+        <wj-popup control="popup" owner="#btn2" show-trigger="Click" hide-trigger="Click" shown="shown(e)" showing="showing(e)">
+            <h3>
+        Salutation
+    </h3>
+            <div class="popover-content">
+                <wj-input-time min="09:00" max="23:59" format="h:mm" ng-model-options="{ debounce: 1 }" step="1">
+                </wj-input-time>
 
-    </div>
-</wj-popup>
+                <input type="text" ng-show="true" ng-model="testA">
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+                <div id="theInputTime"></div>
 
-</form>
+            </div>
+        </wj-popup>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        </form>
 
 </body>
 
